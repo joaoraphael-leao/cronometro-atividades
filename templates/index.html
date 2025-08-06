@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro de Atividades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .cronometro-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .cronometro-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .start-btn {
+            background: #27ae60;
+        }
+
+        .start-btn:hover {
+            background: #229954;
+        }
+
+        .stop-btn {
+            background: #e74c3c;
+        }
+
+        .stop-btn:hover {
+            background: #c0392b;
+        }
+
+        .reset-btn {
+            background: #f39c12;
+        }
+
+        .reset-btn:hover {
+            background: #e67e22;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        .tempo-manual {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+        }
+
+        .tempo-manual h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .tempo-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tempo-inputs input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .tempo-inputs input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .tempo-inputs span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .atalhos-tempo {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .atalho-btn {
+            background: #9b59b6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .atalho-btn:hover {
+            background: #8e44ad;
+            transform: scale(1.05);
+        }
+
+        .atividade-section {
+            margin-bottom: 30px;
+        }
+
+        .atividade-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        select, input[type="text"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .atividades-lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .atividade-card {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 5px solid #3498db;
+        }
+
+        .atividade-nome {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .atividade-horas {
+            font-size: 1.5em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .grafico-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .grafico-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .grafico-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .mensagem {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .mensagem.erro {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .atividade-controls {
+                flex-direction: column;
+            }
+            
+            select, input[type="text"] {
+                min-width: 100%;
+            }
+
+            .tempo-inputs {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tempo-inputs input {
+                width: 80px;
+            }
+
+            .atalhos-tempo {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .atalho-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Cronômetro de Atividades</h1>
+        
+        <div class="cronometro-section">
+            <div class="cronometro-display" id="cronometro">00:00:00</div>
+            <div class="controls">
+                <button id="iniciar" class="start-btn">▶️ Iniciar</button>
+                <button id="pausar" class="stop-btn" disabled>⏸️ Pausar</button>
+                <button id="parar" class="stop-btn" disabled>⏹️ Parar</button>
+                <button id="resetar" class="reset-btn">🔄 Resetar</button>
+            </div>
+            <div class="tempo-manual">
+                <h3>⏰ Adicionar Tempo Manualmente</h3>
+                <div class="tempo-inputs">
+                    <input type="number" id="input-horas" min="0" max="23" placeholder="H" title="Horas">
+                    <span>:</span>
+                    <input type="number" id="input-minutos" min="0" max="59" placeholder="M" title="Minutos">
+                    <span>:</span>
+                    <input type="number" id="input-segundos" min="0" max="59" placeholder="S" title="Segundos">
+                    <button id="adicionar-tempo-manual">➕ Adicionar</button>
+                </div>
+                <div class="atalhos-tempo">
+                    <button id="atalho-50min" class="atalho-btn">⚡ +50 min</button>
+                    <button id="atalho-30min" class="atalho-btn">⚡ +30 min</button>
+                    <button id="atalho-15min" class="atalho-btn">⚡ +15 min</button>
+                    <button id="atalho-5min" class="atalho-btn">⚡ +5 min</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="atividade-section">
+            <div class="atividade-controls">
+                <select id="atividade-select">
+                    <option value="">Selecione uma atividade</option>
+                    {% for atividade in atividades %}
+                    <option value="{{ atividade }}">{{ atividade }}</option>
+                    {% endfor %}
+                </select>
+                <button id="adicionar-tempo">➕ Adicionar Tempo</button>
+                <button id="remover-atividade" class="remove-btn">🗑️ Remover Atividade</button>
+                <input type="text" id="nova-atividade" placeholder="Nova atividade">
+                <button id="criar-atividade">🆕 Criar Atividade</button>
+            </div>
+            
+            <div class="mensagem" id="mensagem"></div>
+        </div>
+
+        <div class="atividades-lista" id="atividades-lista">
+            {% for atividade, horas in atividades.items() %}
+            <div class="atividade-card">
+                <div class="atividade-nome">{{ atividade }}</div>
+                <div class="atividade-horas">{{ "%.2f"|format(horas) }}h</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="grafico-section">
+            <h2>📊 Distribuição de Tempo</h2>
+            <div class="grafico-container">
+                <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico de distribuição de horas">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cronometro = {
+            segundos: 0,
+            minutos: 0,
+            horas: 0,
+            intervalo: null,
+            rodando: false
+        };
+
+        const display = document.getElementById('cronometro');
+        const btnIniciar = document.getElementById('iniciar');
+        const btnPausar = document.getElementById('pausar');
+        const btnParar = document.getElementById('parar');
+        const btnResetar = document.getElementById('resetar');
+        const btnAdicionarTempo = document.getElementById('adicionar-tempo');
+        const btnRemoverAtividade = document.getElementById('remover-atividade');
+        const selectAtividade = document.getElementById('atividade-select');
+        const inputNovaAtividade = document.getElementById('nova-atividade');
+        const btnCriarAtividade = document.getElementById('criar-atividade');
+        const mensagem = document.getElementById('mensagem');
+        
+        // Elementos para tempo manual
+        const inputHoras = document.getElementById('input-horas');
+        const inputMinutos = document.getElementById('input-minutos');
+        const inputSegundos = document.getElementById('input-segundos');
+        const btnAdicionarTempoManual = document.getElementById('adicionar-tempo-manual');
+        const btnAtalho50min = document.getElementById('atalho-50min');
+        const btnAtalho30min = document.getElementById('atalho-30min');
+        const btnAtalho15min = document.getElementById('atalho-15min');
+        const btnAtalho5min = document.getElementById('atalho-5min');
+
+        function formatarTempo(valor) {
+            return valor.toString().padStart(2, '0');
+        }
+
+        function atualizarDisplay() {
+            display.textContent = `${formatarTempo(cronometro.horas)}:${formatarTempo(cronometro.minutos)}:${formatarTempo(cronometro.segundos)}`;
+        }
+
+        function iniciarCronometro() {
+            if (!cronometro.rodando) {
+                cronometro.intervalo = setInterval(() => {
+                    cronometro.segundos++;
+                    if (cronometro.segundos === 60) {
+                        cronometro.segundos = 0;
+                        cronometro.minutos++;
+                        if (cronometro.minutos === 60) {
+                            cronometro.minutos = 0;
+                            cronometro.horas++;
+                        }
+                    }
+                    atualizarDisplay();
+                }, 1000);
+                cronometro.rodando = true;
+                btnIniciar.disabled = true;
+                btnPausar.disabled = false;
+                btnParar.disabled = false;
+            }
+        }
+
+        function pausarCronometro() {
+            if (cronometro.rodando) {
+                clearInterval(cronometro.intervalo);
+                cronometro.rodando = false;
+                btnIniciar.disabled = false;
+                btnPausar.disabled = true;
+            }
+        }
+
+        function pararCronometro() {
+            clearInterval(cronometro.intervalo);
+            cronometro.rodando = false;
+            btnIniciar.disabled = false;
+            btnPausar.disabled = true;
+            btnParar.disabled = true;
+        }
+
+        function resetarCronometro() {
+            pararCronometro();
+            cronometro.segundos = 0;
+            cronometro.minutos = 0;
+            cronometro.horas = 0;
+            atualizarDisplay();
+        }
+
+        function adicionarTempoManual() {
+            const horas = parseInt(inputHoras.value) || 0;
+            const minutos = parseInt(inputMinutos.value) || 0;
+            const segundos = parseInt(inputSegundos.value) || 0;
+
+            if (horas === 0 && minutos === 0 && segundos === 0) {
+                mostrarMensagem('Digite um tempo válido para adicionar', 'erro');
+                return;
+            }
+
+            cronometro.horas += horas;
+            cronometro.minutos += minutos;
+            cronometro.segundos += segundos;
+
+            // Ajustar overflow
+            if (cronometro.segundos >= 60) {
+                cronometro.minutos += Math.floor(cronometro.segundos / 60);
+                cronometro.segundos = cronometro.segundos % 60;
+            }
+            if (cronometro.minutos >= 60) {
+                cronometro.horas += Math.floor(cronometro.minutos / 60);
+                cronometro.minutos = cronometro.minutos % 60;
+            }
+
+            atualizarDisplay();
+            
+            // Limpar inputs
+            inputHoras.value = '';
+            inputMinutos.value = '';
+            inputSegundos.value = '';
+
+            mostrarMensagem(`Tempo adicionado: ${horas}h ${minutos}m ${segundos}s`);
+        }
+
+        function adicionarAtalhoTempo(minutos) {
+            cronometro.minutos += minutos;
+            
+            // Ajustar overflow
+            if (cronometro.minutos >= 60) {
+                cronometro.horas += Math.floor(cronometro.minutos / 60);
+                cronometro.minutos = cronometro.minutos % 60;
+            }
+
+            atualizarDisplay();
+            mostrarMensagem(`+${minutos} minutos adicionados`);
+        }
+
+        function mostrarMensagem(texto, tipo = 'sucesso') {
+            mensagem.textContent = texto;
+            mensagem.className = tipo === 'erro' ? 'mensagem erro' : 'mensagem';
+            mensagem.style.display = 'block';
+            setTimeout(() => {
+                mensagem.style.display = 'none';
+            }, 3000);
+        }
+
+        function obterTempoEmHoras() {
+            return cronometro.horas + (cronometro.minutos / 60) + (cronometro.segundos / 3600);
+        }
+
+        async function adicionarTempo() {
+            const atividade = selectAtividade.value;
+            if (!atividade) {
+                mostrarMensagem('Selecione uma atividade', 'erro');
+                return;
+            }
+
+            const tempoHoras = obterTempoEmHoras();
+            if (tempoHoras === 0) {
+                mostrarMensagem('Cronômetro está zerado', 'erro');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/adicionar_tempo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        atividade: atividade,
+                        tempo_horas: tempoHoras
+                    })
+                });
+
+                const data = await response.json();
+                if (data.sucesso) {
+                    mostrarMensagem(data.mensagem);
+                    resetarCronometro();
+                    await atualizarPagina();
+                } else {
+                    mostrarMensagem(data.erro, 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro ao adicionar tempo', 'erro');
+            }
+        }
+
+        async function criarAtividade() {
+            const nome = inputNovaAtividade.value.trim();
+            if (!nome) {
+                mostrarMensagem('Digite o nome da atividade', 'erro');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/nova_atividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome: nome
+                    })
+                });
+
+                const data = await response.json();
+                if (data.sucesso) {
+                    mostrarMensagem(data.mensagem);
+                    inputNovaAtividade.value = '';
+                    await atualizarPagina();
+                } else {
+                    mostrarMensagem(data.erro, 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro ao criar atividade', 'erro');
+            }
+        }
+
+        async function removerAtividade() {
+            const atividade = selectAtividade.value;
+            if (!atividade) {
+                mostrarMensagem('Selecione uma atividade para remover', 'erro');
+                return;
+            }
+
+            // Confirmar remoção
+            if (!confirm(`Tem certeza que deseja remover a atividade "${atividade}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/remover_atividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome: atividade
+                    })
+                });
+
+                const data = await response.json();
+                if (data.sucesso) {
+                    mostrarMensagem(data.mensagem);
+                    selectAtividade.value = ''; // Limpar seleção
+                    await atualizarPagina();
+                } else {
+                    mostrarMensagem(data.erro, 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro ao remover atividade', 'erro');
+            }
+        }
+
+        async function atualizarPagina() {
+            try {
+                // Atualizar lista de atividades
+                const responseAtividades = await fetch('/api/atividades');
+                const atividades = await responseAtividades.json();
+
+                // Atualizar select
+                selectAtividade.innerHTML = '<option value="">Selecione uma atividade</option>';
+                Object.keys(atividades).forEach(atividade => {
+                    const option = document.createElement('option');
+                    option.value = atividade;
+                    option.textContent = atividade;
+                    selectAtividade.appendChild(option);
+                });
+
+                // Atualizar cards de atividades
+                const listaAtividades = document.getElementById('atividades-lista');
+                listaAtividades.innerHTML = '';
+                Object.entries(atividades).forEach(([nome, horas]) => {
+                    const card = document.createElement('div');
+                    card.className = 'atividade-card';
+                    card.innerHTML = `
+                        <div class="atividade-nome">${nome}</div>
+                        <div class="atividade-horas">${horas.toFixed(2)}h</div>
+                    `;
+                    listaAtividades.appendChild(card);
+                });
+
+                // Atualizar gráfico
+                const responseGrafico = await fetch('/api/grafico');
+                const dataGrafico = await responseGrafico.json();
+                const imgGrafico = document.querySelector('.grafico-container img');
+                imgGrafico.src = `data:image/png;base64,${dataGrafico.grafico}`;
+
+            } catch (error) {
+                mostrarMensagem('Erro ao atualizar página', 'erro');
+            }
+        }
+
+        // Event listeners
+        btnIniciar.addEventListener('click', iniciarCronometro);
+        btnPausar.addEventListener('click', pausarCronometro);
+        btnParar.addEventListener('click', pararCronometro);
+        btnResetar.addEventListener('click', resetarCronometro);
+        btnAdicionarTempo.addEventListener('click', adicionarTempo);
+        btnRemoverAtividade.addEventListener('click', removerAtividade);
+        btnCriarAtividade.addEventListener('click', criarAtividade);
+        
+        // Event listeners para tempo manual
+        btnAdicionarTempoManual.addEventListener('click', adicionarTempoManual);
+        btnAtalho50min.addEventListener('click', () => adicionarAtalhoTempo(50));
+        btnAtalho30min.addEventListener('click', () => adicionarAtalhoTempo(30));
+        btnAtalho15min.addEventListener('click', () => adicionarAtalhoTempo(15));
+        btnAtalho5min.addEventListener('click', () => adicionarAtalhoTempo(5));
+
+        // Enter no input de nova atividade
+        inputNovaAtividade.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                criarAtividade();
+            }
+        });
+
+        // Enter nos inputs de tempo manual
+        [inputHoras, inputMinutos, inputSegundos].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    adicionarTempoManual();
+                }
+            });
+        });
+
+        // Validação dos inputs de tempo
+        inputHoras.addEventListener('input', (e) => {
+            if (e.target.value > 23) e.target.value = 23;
+            if (e.target.value < 0) e.target.value = 0;
+        });
+
+        [inputMinutos, inputSegundos].forEach(input => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value > 59) e.target.value = 59;
+                if (e.target.value < 0) e.target.value = 0;
+            });
+        });
+
+        // Inicializar display
+        atualizarDisplay();
+    </script>
+</body>
+</html>
