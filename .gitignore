@@ -18,6 +18,20 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
+
+# Ambiente e logs
+.env
+*.log
+/var/log/
+
+# Dados de usuários (mantém apenas o exemplo)
+users.json
+atividades_data_*.json
+
+# Arquivos temporários
+*.tmp
+*.swp
+*.swo
 *.egg
 MANIFEST
 

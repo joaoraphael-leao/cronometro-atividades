@@ -27,6 +27,67 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+
+        .user-welcome {
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .login-btn, .register-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .register-btn {
+            background: #27ae60;
+        }
+
+        .login-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .register-btn:hover {
+            background: #219a52;
+            transform: translateY(-1px);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
         h1 {
             text-align: center;
             color: #333;
@@ -301,6 +362,26 @@
 </head>
 <body>
     <div class="container">
+        <div class="user-info">
+            {% if current_user.is_authenticated %}
+                <div class="user-welcome">
+                    <span>👋 Olá, <strong>{{ current_user.username }}</strong>!</span>
+                    <span style="color: #27ae60; margin-left: 10px;">✓ Dados salvos na sua conta</span>
+                </div>
+                <div class="user-actions">
+                    <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Sair</a>
+                </div>
+            {% else %}
+                <div class="user-welcome">
+                    <span style="color: #f39c12; margin-left: 10px;">Dados salvos apenas no navegador</span>
+                </div>
+                <div class="user-actions">
+                    <a href="{{ url_for('login') }}" class="login-btn">🔑 Entrar</a>
+                    <a href="{{ url_for('register') }}" class="register-btn">📝 Criar Conta</a>
+                </div>
+            {% endif %}
+        </div>
+        
         <h1>⏱️ Cronômetro de Atividades</h1>
         
         <div class="cronometro-section">
