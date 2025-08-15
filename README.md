@@ -4,13 +4,13 @@ Uma aplicação web desenvolvida em Flask para controlar o tempo gasto em difere
 
 ## Funcionalidades
 
-- ** Sistema de Login**: Cada usuário tem sua própria conta e dados
-- ** Cronômetro Completo**: Iniciar, pausar, parar e resetar
-- ** Tempo Manual**: Adicionar horas, minutos e segundos manualmente
-- ** Atalhos Rápidos**: Botões para adicionar +50min, +30min, +15min, +5min
-- ** Gerenciamento de Atividades**: Criar, remover e adicionar tempo às atividades
-- ** Visualização**: Gráfico de pizza da distribuição de tempo
-- ** Persistência Individual**: Cada usuário tem seu próprio arquivo JSON de dados
+- **Sistema de Login**: Cada usuário tem sua própria conta e dados
+- **Cronômetro Completo**: Iniciar, pausar, parar e resetar
+- **Tempo Manual**: Adicionar horas, minutos e segundos manualmente
+- **Atalhos Rápidos**: Botões para adicionar +50min, +30min, +15min, +5min
+- **Gerenciamento de Atividades**: Criar, remover e adicionar tempo às atividades
+- **Visualização**: Gráfico de pizza da distribuição de tempo
+- **Persistência Individual**: Cada usuário tem seu próprio arquivo JSON de dados
 
 ## Sistema de Usuários
 
