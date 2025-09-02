@@ -367,6 +367,9 @@
                 <div class="user-welcome">
                     <span>👋 Olá, <strong>{{ current_user.username }}</strong>!</span>
                     <span style="color: #27ae60; margin-left: 10px;">✓ Dados salvos na sua conta</span>
+                    <div style="margin-top: 8px; font-size: 0.9em; color: #7f8c8d;">
+                        💝 Gostou do projeto? <a href="https://github.com/pedrohsre/cronometro-atividades" target="_blank" style="color: #3498db; text-decoration: none;">⭐ Colabore no GitHub</a>
+                    </div>
                 </div>
                 <div class="user-actions">
                     <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Sair</a>
@@ -374,6 +377,9 @@
             {% else %}
                 <div class="user-welcome">
                     <span style="color: #f39c12; margin-left: 10px;">Dados salvos apenas no navegador</span>
+                    <div style="margin-top: 8px; font-size: 0.9em; color: #7f8c8d;">
+                        💝 Gostou do projeto? <a href="https://github.com/pedrohsre/cronometro-atividades" target="_blank" style="color: #3498db; text-decoration: none;">⭐ Colabore no GitHub</a>
+                    </div>
                 </div>
                 <div class="user-actions">
                     <a href="{{ url_for('login') }}" class="login-btn">🔑 Entrar</a>
