@@ -30,3 +30,11 @@ Uma aplicação web desenvolvida em Flask para controlar o tempo gasto em difere
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Gráficos**: Matplotlib
 - **Persistência**: JSON
+
+## To-Do List
+
+- Criar sistema de **recuperação de senha**
+- Alterar horas de **formato decimal → sexagesimal** na visualização
+- Criar novo componente para **acompanhamento semanal das horas**
+  - Manter o componente atual como **"Total"**
+- Melhorar UX
