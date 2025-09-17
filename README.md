@@ -38,3 +38,4 @@ Uma aplicação web desenvolvida em Flask para controlar o tempo gasto em difere
 - Criar novo componente para **acompanhamento semanal das horas**
   - Manter o componente atual como **"Total"**
 - Melhorar UX
+- Adicionar o **Cronometro** funcionando na aba
