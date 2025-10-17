@@ -263,6 +263,63 @@ def nova_atividade():
     
     return response
 
+@app.route('/api/zerar-atividades', methods=['POST'])
+def atualizar_atividade():
+    atividades = carregar_dados()
+
+    for atividade in atividades:
+        atividades[atividade] = 0
+    
+    if current_user.is_authenticated:
+        salvar_dados(atividades)
+        response = jsonify({
+            'sucesso': True,
+            'atividades': atividades,
+            'mensagem': 'Tempos zerados com sucesso'
+        })
+    else:
+        # Se não estiver logado, salva nos cookies
+        response = jsonify({
+            'sucesso': True,
+            'atividades': atividades,
+            'mensagem': 'Tempos zerados com sucesso'
+        })
+        response.set_cookie('atividades_data', json.dumps(atividades), max_age=30*24*60*60)
+    
+    return response
+
+@app.route('/api/zerar-tempo-atividade', methods=['POST'])
+def zerarTempoAtividade():
+    """API para zerar o tempo de uma atividade"""
+    data = request.json
+    atividade = data.get('atividade')
+    
+    if not atividade:
+        return jsonify({'erro': 'Atividade não especificada'}), 400
+    
+    atividades = carregar_dados()
+    
+    if atividade in atividades:
+        atividades[atividade] = 0
+    
+    if current_user.is_authenticated:
+        salvar_dados(atividades)
+        response = jsonify({
+            'sucesso': True,
+            'atividades': atividades,
+            'mensagem': f'Tempo zerado com sucesso para a atividade "{atividade}"'
+        })
+
+    else:
+        # Se não estiver logado, salva nos cookies
+        response = jsonify({
+            'sucesso': True,    
+            'atividades': atividades,
+            'mensagem': f'Tempo zerado com sucesso para a atividade "{atividade}"'
+        })
+        response.set_cookie('atividades_data', json.dumps(atividades), max_age=30*24*60*60)
+    
+    return response
 @app.route('/api/remover_atividade', methods=['POST'])
 def remover_atividade():
     """API para remover uma atividade"""
