@@ -426,11 +426,16 @@
                     {% endfor %}
                 </select>
                 <button id="adicionar-tempo">➕ Adicionar Tempo</button>
-                <button id="remover-atividade" class="remove-btn">🗑️ Remover Atividade</button>
+                <button id="zerar-tempo-atividade" style="background-color: #3e001e">Zerar tempo</button>
+            </div>
+            <div class="atividade-controls">
                 <input type="text" id="nova-atividade" placeholder="Nova atividade">
+                <button id="remover-atividade" class="remove-btn">🗑️ Remover Atividade</button>
                 <button id="criar-atividade">🆕 Criar Atividade</button>
             </div>
-            
+            <div class="atividade-controls">
+                <button id="zerar-tempos" style="background-color: #a10005">Zerar tempo de todas as atividades</button>
+            </div>
             <div class="mensagem" id="mensagem"></div>
         </div>
 
@@ -466,12 +471,13 @@
         const btnParar = document.getElementById('parar');
         const btnResetar = document.getElementById('resetar');
         const btnAdicionarTempo = document.getElementById('adicionar-tempo');
+        const btnZerarTempoAtividade = document.getElementById('zerar-tempo-atividade');
+        const btnZerarTempos = document.getElementById('zerar-tempos');
         const btnRemoverAtividade = document.getElementById('remover-atividade');
         const selectAtividade = document.getElementById('atividade-select');
         const inputNovaAtividade = document.getElementById('nova-atividade');
         const btnCriarAtividade = document.getElementById('criar-atividade');
         const mensagem = document.getElementById('mensagem');
-        
         // Elementos para tempo manual
         const inputHoras = document.getElementById('input-horas');
         const inputMinutos = document.getElementById('input-minutos');
@@ -583,6 +589,66 @@
             mostrarMensagem(`+${minutos} minutos adicionados`);
         }
 
+        async function zerarTempoAtividade(){
+
+            const atividade = selectAtividade.value;
+            if (!atividade) {
+                mostrarMensagem('Selecione uma atividade', 'erro');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/zerar-tempo-atividade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        atividade: atividade,
+                    })
+                });
+
+                const data = await response.json();
+                if (data.sucesso) {
+                    mostrarMensagem(data.mensagem);
+                    await atualizarPagina();
+                } else {
+                    mostrarMensagem(data.erro, 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro ao adicionar tempo', 'erro');
+            }
+        }
+        
+        async function zerarTempos(){
+
+            try {
+
+                if (!confirm("Tem certeza que deseja zerar TODOS os tempos das atividades? Esta ação não pode ser desfeita!")) {
+                    return;
+                }
+
+                const response = await fetch('/api/zerar-atividades', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.sucesso) {
+                    mostrarMensagem(data.mensagem);
+                    resetarCronometro();
+                    await atualizarPagina();
+                } else {
+                    mostrarMensagem(data.erro, 'erro');
+                }
+            } catch (error) {
+                mostrarMensagem('Erro ao adicionar tempo', 'erro');
+            }
+            console.log(data);
+        }
         function mostrarMensagem(texto, tipo = 'sucesso') {
             mensagem.textContent = texto;
             mensagem.className = tipo === 'erro' ? 'mensagem erro' : 'mensagem';
@@ -748,7 +814,9 @@
         btnAdicionarTempo.addEventListener('click', adicionarTempo);
         btnRemoverAtividade.addEventListener('click', removerAtividade);
         btnCriarAtividade.addEventListener('click', criarAtividade);
-        
+        btnZerarTempoAtividade.addEventListener('click', zerarTempoAtividade);
+        btnZerarTempos.addEventListener('click', zerarTempos);
+    
         // Event listeners para tempo manual
         btnAdicionarTempoManual.addEventListener('click', adicionarTempoManual);
         btnAtalho50min.addEventListener('click', () => adicionarAtalhoTempo(50));
